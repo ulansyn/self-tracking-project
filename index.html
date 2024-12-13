@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weight Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Стиль для контейнера графика */
+        .chart-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        canvas {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="weightChart" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        // Загружаем данные из JSON
+        fetch('weights.json')
+            .then(response => response.json())
+            .then(data => {
+                // Преобразование данных в массивы
+                const labels = Object.keys(data); // Массив дат
+                const weights = Object.values(data); // Массив весов
+
+                // Создаем график с использованием Chart.js
+                const ctx = document.getElementById('weightChart').getContext('2d');
+                const weightChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels, // Даты на оси X
+                        datasets: [{
+                            label: 'Вес (кг)',
+                            data: weights, // Значения веса на оси Y
+                            borderColor: '#4bc0c0', // Цвет линии
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Цвет фона области под графиком
+                            borderWidth: 2,
+                            pointBackgroundColor: '#4bc0c0', // Цвет точек на линии
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            fill: true // Заполнение под линией
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 14,
+                                        family: 'Arial, sans-serif',
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                bodyColor: '#fff',
+                                titleColor: '#fff',
+                                borderColor: '#4bc0c0',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Дата',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 30,
+                                    font: {
+                                        size: 12,
+                                        family: 'Arial, sans-serif'
+                                    }
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Вес (кг)',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Arial, sans-serif'
+                                    }
+                                },
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Ошибка при загрузке данных: ', error));
+    </script>
+</body>
+</html>
